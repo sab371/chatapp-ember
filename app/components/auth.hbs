@@ -1,0 +1,17 @@
+<form>
+    <div class="text-field">
+        <Input type="text" id="username" required />
+        <span></span>
+        <label>UserName:</label>
+    </div>
+    <div class="text-field">
+        <Input type="password" id="password" required />
+        <span></span>
+        <label>Password:</label>
+    </div>
+    <div id="result"></div>
+    <input {{action "buttonClick"}} type="submit" value="Start Chatting">
+    <div class="signup_link">
+        New User?<LinkTo @route="signup">Signup</LinkTo>
+    </div>
+</form>

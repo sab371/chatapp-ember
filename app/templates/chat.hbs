@@ -1,0 +1,146 @@
+<head>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+</head>
+<div class="container">
+    <div class="chatbox">
+        <div class="top-bar">
+            {{!-- <div class="avatar">
+                <p>V</p>
+            </div> --}}
+            <div class="name">{{model.chat_id}}</div>
+            <LinkTo @route="people">
+                <img src="../assets/images/back-icon2.png" title="go back to people" alt="people">
+
+            </LinkTo>
+        </div>
+        <div class="middle" id="scroll" onload="toBottom()">
+            <div class="msg">
+                {{#each @model.json as |msg|}}
+                {{#if (eq msg.from @model.chat_id)}}
+                <div class="incoming">
+                    <div class="bubble">
+                        {{#if (eq msg.type "text")}}
+                        {{msg.message}}<br>
+                        <div class="datetime" style="font-size:small;">
+                            {{msg.time}}
+                        </div>
+                        {{else}}
+                        <div class="img-message">
+                            <img src={{msg.message}} alt={{msg.message}}>
+                        </div>
+                        <div class="datetime" style="font-size:small;">
+                            {{msg.time}}
+                        </div>
+                        {{/if}}
+                    </div>
+                </div>
+                {{else}}
+                <div class="outgoing">
+                    <div class="bubble">
+                        {{#if (eq msg.type "text")}}
+                        {{msg.message}}<br>
+                        <div class="datetime" style="font-size:small;">
+                            {{msg.time}}
+                        </div>
+                        {{else}}
+                        <div class="img-message">
+                            <img src={{msg.message}} alt={{msg.message}}>
+                        </div>
+                        <div class="datetime" style="font-size:small;">
+                            {{msg.time}}
+                        </div>
+                        {{/if}}
+                    </div>
+
+                </div>
+                {{/if}}
+                {{/each}}
+                <div id="newmsg"></div>
+            </div>
+        </div>
+        <ChatSender @name={{model.chat_id}} />
+
+    </div>
+</div>
+
+<script>
+    var object = document.getElementById("scroll");
+    object.scrollTop = object.scrollHeight;
+
+    var socket = new WebSocket("ws://127.0.0.1:8090/endpoint");
+    socket.binaryType = 'blob';
+    var from = localStorage.getItem('username');
+    var to = localStorage.getItem('chat_id');
+    console.log("from : " + localStorage.getItem('username'));
+    console.log("to : " + localStorage.getItem('chat_id'));
+    socket.onopen = function () {
+        console.log("socket connected");
+        socket.send(JSON.stringify({
+            type: "info",
+            from: from,
+            to: to
+        }))
+    }
+    console.log("Socket connected : " + socket);
+
+
+    socket.onmessage = function (event) {
+        var date = new Date();
+        var dt = date.toLocaleString();
+        console.log(event.data);
+        var data = JSON.parse(event.data);
+        console.log("message: from " + data.from + " to " + event.data.to);
+        if(data.from == from && data.to == to){
+            document.getElementById('newmsg').innerHTML += "<div class=\"outgoing\"><div class=\"bubble\">" + data.data + "<div class=\"datetime\" style=\"font-size:small\">" + dt + "</div></div></div>";
+        }
+        else
+            document.getElementById('newmsg').innerHTML += "<div class=\"incoming\"><div class=\"bubble\">" + data.data + "<div class=\"datetime\" style=\"font-size:small\">" + dt + "</div></div></div>";
+
+        object.scrollTop = object.scrollHeight;
+    }
+
+    socket.onerror = function(message) {
+        alert("Error ..." + message.code + " \n");
+    }
+</script>
+
+{{!--
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+<div id="chatview" class="p1">
+    <div id="profile">
+        <p>Miro Badev</p>
+        <span>miro@badev@gmail.com</span>
+    </div>
+    <div id="chat-messages">
+        <label>Thursday 02</label>
+
+        <div class="message">
+            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/1_copy.jpg" />
+            <div class="bubble">
+                Really cool stuff!
+                <div class="corner"></div>
+                <span>3 min</span>
+            </div>
+        </div>
+
+        <div class="message right">
+            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/2_copy.jpg" />
+            <div class="bubble">
+                Can you share a link for the tutorial?
+                <div class="corner"></div>
+                <span>1 min</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="sendmessage">
+        <input type="text" value="Send message..." />
+        <button id="send"></button>
+    </div>
+
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> --}}
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>

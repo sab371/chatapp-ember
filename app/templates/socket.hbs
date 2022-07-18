@@ -1,0 +1,126 @@
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</head>
+<ChatSender @name="gfh" />
+
+{{!-- <h2>File Upload</h2>
+Select file
+<input onchange="selectFile(event)" type="file" />
+<ImageViewer />
+<input onclick="sendMessage(event)" type="button" value="submit">
+<SendImage />
+
+<input type="button" value="Connect" onclick="connectChatServer()" />
+
+<br>
+
+<input onclick="wsCloseConnection()" value="Disconnect" type="button">
+<br />
+<textarea id="echoText" rows="5" cols="30"></textarea>
+<script>
+
+    var webSocket = new WebSocket("ws://localhost:8090/endpoint");
+    webSocket.binaryType = 'blob';
+    webSocket.onopen = function (message) { wsOpen(message); };
+    webSocket.onclose = function (message) { wsClose(message); };
+    webSocket.onerror = function (message) { wsError(message); };
+    function wsOpen(message) {
+        echoText.value += "Connected ... \n";
+    }
+    function wsSendMessage() {
+        webSocket.send(message.value);
+        echoText.value += "Message sended to the server : " + message.value + "\n";
+        message.value = "";
+    }
+    function wsCloseConnection() {
+        webSocket.close();
+    }
+    function wsGetMessage(message) {
+        echoText.value += "Message received from to the server : " + message.data + "\n";
+    }
+    function wsClose(message) {
+        echoText.value += "Disconnect ... \n";
+    }
+
+    function wsError(message) {
+        echoText.value += "Error ..." + message.code + " \n";
+    }
+
+    var fileInput = document.querySelector('input[type="file"]');
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+
+    function handleEvent(event) {
+        console.log(`${event.type}: ${event.loaded} bytes transferred\n`);
+    }
+    fileInput.addEventListener("change", function () {
+        reader.addEventListener("loadstart", handleEvent);
+        reader.addEventListener("load", handleEvent);
+        reader.addEventListener("loadend", handleEvent);
+        reader.addEventListener("progress", handleEvent);
+    });
+
+    function sendFile() {
+
+        var file = document.getElementById('filename').files[0];
+        console.log(file);
+        var reader = new FileReader();
+
+        var rawData = new ArrayBuffer();
+
+        reader.loadstart = function (e) {
+            var rawData = e.target.result;
+            console.log(rawData);
+            var byteArray = new Uint8Array(rawData);
+            console.log(byteArray);
+            console.log(byteArray.length);
+        };
+        console.log(webSocket.bufferedAmount);
+        reader.onload = function (e) {
+            reader.readAsDataURL(file);
+
+        }
+        console.log(webSocket.bufferedAmount);
+
+
+
+    }
+
+    var fileContent;
+    function selectFile(event) {
+        console.log("from select file function " + event.target.files[0].name);
+        fileContent = event.target.files[0];
+    }
+    function sendMessage(event) {
+        var content;
+        console.log(fileContent);
+        if (fileContent) {
+            const reader = new FileReader();
+            const img = document.getElementById('file-image');
+            var rawData = new Blob();
+
+            reader.readAsDataURL(fileContent);
+            reader.onload = function () {
+                img.src = reader.result;
+                rawData = reader.result;
+                console.log(rawData);
+                var byteArray = new Uint16Array(rawData);
+                console.log(new Uint8Array(2));
+                const messageObject = {
+                    type: "file",
+                    body: rawData,
+                    MimeType: fileContent.type,
+                    fileName: fileContent.name
+                }
+                console.log(byteArray);
+                webSocket.send(JSON.stringify(messageObject));
+                console.log(webSocket.bufferedAmount);
+            }
+
+        }
+
+    }
+    console.log(webSocket.bufferedAmount);
+</script> --}}

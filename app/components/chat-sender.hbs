@@ -1,0 +1,95 @@
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<div class="dropzone hide" id="image-display"></div>
+<div class="bottom-bar">
+    <div class="chat">
+        <form id="filename">
+            <div class="image-upload">
+                <label for="file-input" class="icon">
+                    <ion-icon name="attach"></ion-icon>
+                </label>
+
+                <input onchange="selectFile(event)" id="file-input" type="file" name="fileUpload" accept="image/*" />
+            </div>
+
+        </form>
+        <input type="text" placeholder="Type a message..." id="message" />
+        <button id="button" {{action "sendMessage" @name}} type="submit">
+            <ion-icon name="send"></ion-icon>
+        </button>
+    </div>
+</div>
+<div class="hide" id="image-display">
+    <span onclick="closeDiv()"><b>x</b></span>
+
+    <img id="file-image" src="" alt="Preview" class="hidden">
+    <form id="filename">
+        <input {{action "uploadFile" @name}} type="submit" value="Send" />
+    </form>
+</div>
+
+<script>
+    document.getElementById("message")
+        .addEventListener("keyup", function (event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+                document.getElementById("button").click();
+            }
+        });
+    var fileContent;
+    function selectFile(event) {
+        console.log("from select file function " + event.target.files[0].name);
+        fileContent = event.target.files[0];
+        if (fileContent) {
+            const reader = new FileReader();
+            const img = document.getElementById('file-image');
+            var rawData = new Blob();
+
+            reader.readAsDataURL(fileContent);
+            reader.onload = function () {
+                img.src = reader.result;
+                rawData = reader.result;
+                console.log(rawData);
+                var byteArray = new Uint16Array(rawData);
+                const messageObject = {
+                    type: "file",
+                    body: rawData,
+                    MimeType: fileContent.type,
+                    fileName: fileContent.name
+                }
+                console.log(byteArray);
+            }
+            document.getElementById('image-display').classList.remove('hide');
+
+        }
+    }
+
+    function closeDiv() {
+        console.log('from close function');
+        const img = document.getElementById('file-image');
+        img.src = "";
+        document.getElementById('file-input').value = '';
+        document.getElementById('image-display').classList.add('hide');
+    }
+    var lastTarget = null;
+    window.addEventListener('dragenter', function (e) {
+        document.getElementById('image-display').classList.remove('hide');
+        document.querySelector(".dropzone").style.visibility = "";
+        document.querySelector(".dropzone").style.opacity = 1;
+    });
+    window.addEventListener('dragdrop', function (e) {
+        document.getElementById('image-display').innerHTML = "<img src=\"\" alt=\"\">";
+        var files = e.target.files || e.dataTransfer.files;
+        e.stopPropagation();
+        e.preventDefault();
+        for (var i = 0, f; f = files[i]; i++) {
+            parseFile(f);
+            uploadFile(f);
+        }
+        if (e.target === lastTarget || e.target === document) {
+            document.querySelector(".dropzone").style.visibility = "hidden";
+            document.querySelector(".dropzone").style.opacity = 0;
+        }
+    });
+</script>

@@ -1,0 +1,9 @@
+{{#if this.isLarge}}
+  <button type="button" class="image large" {{on "click" this.toggleSize}}>
+    <img id="file-image" src="" alt="Preview" class="hidden">
+  </button>
+{{else}}
+  <button type="button" class="image" {{on "click" this.toggleSize}}>
+    <img id="file-image" src="" alt="Preview" class="hidden">
+  </button>
+{{/if}}

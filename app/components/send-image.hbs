@@ -1,0 +1,60 @@
+
+{{!--
+<form id="upload-image-form">
+    <input id="file-upload" type="file" name="fileUpload" accept="image/*" />
+    <label for="file-upload" id="file-drag">
+        <img id="file-image" src="#" alt="Preview" class="hidden">
+
+    </label>
+</form>
+
+
+
+<div id="drop-region" style="top: 30vh; height: 50vh; position: absolute; width: 100%;">
+    <div id="image-preview"></div>
+    <input type="file" dropzone="copy file:image/png file:image/jpg file:image/jpeg" />
+</div>
+
+<script>
+    var dropRegion = document.getElementById("drop-region");
+    var imagePreviewRegion = document.getElementById('image-preview');
+    var fakeInput = document.createElement("input");
+    fakeInput.type = "file";
+    fakeInput.accept = "image/*";
+    fakeInput.multiple = true;
+    dropRegion.addEventListener('click', function () {
+        fakeInput.click();
+    });
+
+</script> --}}
+
+<script>
+    var fileContent;
+    function selectFile(event) {
+        console.log("from select file function " + event.target.files[0].name);
+        fileContent = event.target.files[0];
+        if (fileContent) {
+            const reader = new FileReader();
+            const img = document.getElementById('file-image');
+            var rawData = new Blob();
+
+            reader.readAsDataURL(fileContent);
+            reader.onload = function () {
+                img.src = reader.result;
+                rawData = reader.result;
+                console.log(rawData);
+                var byteArray = new Uint16Array(rawData);
+                const messageObject = {
+                    type: "file",
+                    body: rawData,
+                    MimeType: fileContent.type,
+                    fileName: fileContent.name
+                }
+                console.log(byteArray);
+            }
+            document.getElementById('image-display').classList.remove('hide');
+
+        }
+    }
+
+</script>
